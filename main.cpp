@@ -40,7 +40,7 @@ int main() {
   std::cout << "Ingrese el peso del archivo en MB: ";
   std::cin >> pesoArchivo;
 
-  numeroParticiones = (pesoArchivo + 299) / 300; // Asume que la capacidad máxima por conexión es de 300 MB
+  numeroParticiones = (pesoArchivo + 299) / 300;
   std::cout << "Número de particiones necesarias: " << numeroParticiones << std::endl;
 
   
@@ -53,6 +53,7 @@ int main() {
     nodos.push_back(nodo);
     nodoMap[nodo.nombre] = &nodos.back(); // Mapeo del nombre al Nodo
   }
+
 
   CSVReader readerConexiones("conexiones.csv");
   auto datosConexiones = readerConexiones.readData();
@@ -157,6 +158,10 @@ std::cout << "La ruta ha sido exportada a 'ruta.csv'." << std::endl;
   distancias[nodoIndices[nodoOrigen]] = 0;
 
 }
+
+
+
+
   
 
 
