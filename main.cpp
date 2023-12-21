@@ -27,25 +27,21 @@ int main() {
   std::unordered_map<std::string, Nodo*> nodoMap;
   std::vector<Arista> aristas;
 
-    // ... [resto del código inicial]
-
-    int pesoArchivo, numeroParticiones;
-    std::cout << "Ingrese el peso del archivo en MB: ";
-    std::cin >> pesoArchivo;
-
-    numeroParticiones = (pesoArchivo + 299) / 300; // Asume que la capacidad máxima por conexión es de 300 MB
-    std::cout << "Número de particiones necesarias: " << numeroParticiones << std::endl;
-
-    std::string nombreDestino;
-    std::cout << "Ingrese el nombre del nodo destino: ";
-    std::cin >> nombreDestino;
-    Nodo* nodoDestino = nodoMap[nombreDestino]; // Asegúrate de que este nodo existe en tu mapa
-
-
-
   std::string nombreOrigen;
   std::cout << "Ingrese el nombre del nodo origen: ";
   std::cin >> nombreOrigen;
+
+  std::string nombreDestino;
+  std::cout << "Ingrese el nombre del nodo destino: ";
+  std::cin >> nombreDestino;
+  Nodo* nodoDestino = nodoMap[nombreDestino]; // Asegúrate de que este nodo existe en tu mapa
+
+  int pesoArchivo, numeroParticiones;
+  std::cout << "Ingrese el peso del archivo en MB: ";
+  std::cin >> pesoArchivo;
+
+  numeroParticiones = (pesoArchivo + 299) / 300; // Asume que la capacidad máxima por conexión es de 300 MB
+  std::cout << "Número de particiones necesarias: " << numeroParticiones << std::endl;
 
   
 
@@ -135,16 +131,17 @@ int main() {
       actual = predecesores[actual]; // Sigue al predecesor
   }
 
- std::ofstream salida("ruta.csv");
-  salida << "Nodo, Tiempo Acumulado\n";
+std::ofstream salida("ruta.csv");
+salida << "Nodo, Tiempo Acumulado\n";
 
-  for (auto nodo : ruta) {
-      std::cout << "Nodo: " << nodo->nombre << " - Tiempo acumulado: " << distancias[nodoIndices[nodo]] << " segundos" << std::endl;
-      salida << nodo->nombre << ", " << distancias[nodoIndices[nodo]] << "\n";
-  }
+for (auto nodo : ruta) {
+    std::cout << "Nodo: " << nodo->nombre << " - Tiempo acumulado: " << distancias[nodoIndices[nodo]] << " segundos" << std::endl;
+    salida << nodo->nombre << ", " << distancias[nodoIndices[nodo]] << "\n";
+}
 
-  salida.close();
-  std::cout << "La ruta ha sido exportada a 'ruta.csv'." << std::endl;
+salida.close();
+std::cout << "La ruta ha sido exportada a 'ruta.csv'." << std::endl;
+
 
   // Verificar existencia del nodo origen
   if (nodoMap.find(nombreOrigen) == nodoMap.end()) {
