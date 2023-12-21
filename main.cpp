@@ -6,6 +6,7 @@
 #include <list>
 #include <limits>
 #include <cctype>
+#include <fstream>
 
 struct Nodo {
   int id;
@@ -19,6 +20,7 @@ struct Arista {
   int velocidad;
   int distancia;
 };
+
 
 int main() {
   std::vector<Nodo> nodos;
@@ -41,6 +43,11 @@ int main() {
 
 
 
+  std::string nombreOrigen;
+  std::cout << "Ingrese el nombre del nodo origen: ";
+  std::cin >> nombreOrigen;
+
+  
 
   CSVReader readerServidores("servidores.csv");
   auto datosServidores = readerServidores.readData();
@@ -59,14 +66,25 @@ int main() {
       Nodo* destino = nodoMap[fila[1]];
       int velocidad = std::stoi(fila[2]);
       int distancia = std::stoi(fila[3]);
+      
+
     
       Arista arista = {origen, destino, velocidad, distancia};
+      aristas.push_back(arista);
   }
+
+  // Verificar existencia del nodo destino
+  if (nodoMap.find(nombreDestino) == nodoMap.end()) {
+      std::cerr << "Nodo destino no encontrado." << std::endl;
+      return 1; // o manejar de otra manera
+  }
+
 
   // Grafo representado como lista de adyacencia
   std::unordered_map<Nodo*, std::list<Arista>> grafo;
   for (const auto& arista : aristas) {
     Nodo* origen = arista.origen;
+    int tiempoConexion = arista.distancia * numeroParticiones;
     grafo[origen].push_back(arista);
   }
 
@@ -110,12 +128,40 @@ int main() {
       return 0;
     }
   }
-  Nodo* actual = nodoDestino; // Asumiendo que tienes un nodoDestino
+  std::vector<Nodo*> ruta;
+  Nodo* actual = nodoDestino;
   while (actual != nullptr) {
-      std::cout << "Nodo: " << actual->nombre << " - Tiempo hasta ahora: " << distancias[nodoIndices[actual]] << " segundos" << std::endl;
-      actual = predecesores[actual];
+      ruta.insert(ruta.begin(), actual); // Inserta al inicio para revertir la ruta
+      actual = predecesores[actual]; // Sigue al predecesor
   }
+
+ std::ofstream salida("ruta.csv");
+  salida << "Nodo, Tiempo Acumulado\n";
+
+  for (auto nodo : ruta) {
+      std::cout << "Nodo: " << nodo->nombre << " - Tiempo acumulado: " << distancias[nodoIndices[nodo]] << " segundos" << std::endl;
+      salida << nodo->nombre << ", " << distancias[nodoIndices[nodo]] << "\n";
+  }
+
+  salida.close();
+  std::cout << "La ruta ha sido exportada a 'ruta.csv'." << std::endl;
+
+  // Verificar existencia del nodo origen
+  if (nodoMap.find(nombreOrigen) == nodoMap.end()) {
+      std::cerr << "Nodo origen no encontrado." << std::endl;
+      return 1;
+  }
+  Nodo* nodoOrigen = nodoMap[nombreOrigen];
+
+  // Inicialización de distancias
+  for (auto& nodo : nodos) {
+      distancias[nodoIndices[&nodo]] = std::numeric_limits<int>::max();
+  }
+  distancias[nodoIndices[nodoOrigen]] = 0;
+
 }
+  
+
 
 
 
